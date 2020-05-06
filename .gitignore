@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 .idea/
 
+img_upload/
+
 # C extensions
 *.so
 
