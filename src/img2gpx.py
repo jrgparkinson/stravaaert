@@ -1,14 +1,8 @@
 import numpy as np
-# import matplotlib.pyplot as plt
-# from skimage.filters import gaussian
 from skimage import measure
 from skimage import io, feature, exposure
 from skimage.color import rgb2gray
 import gpxpy
-# Construct some test data
-# x, y = np.ogrid[-np.pi:np.pi:100j, -np.pi:np.pi:100j]
-# r = np.sin(np.exp((np.sin(x)**3 + np.cos(y)**2)))
-
 
 def metres_to_latlng_conversion(reference_lat):
     reference_lat = reference_lat * (np.pi / 180)  # Convert to radians
@@ -56,15 +50,7 @@ def img2gpx(img_path,
     # get longest contour:
     contours_paths = [c for n, c in enumerate(contours)]
     longest_contour = max(contours_paths, key=len)
-    # ax.plot(longest_contour[:, 1], longest_contour[:, 0], linewidth=2)
 
-    sorted_contours = sorted(contours_paths, key=lambda x:len(x))
-    # for c in sorted_contours[-1:]:
-    #     ax.plot(c[:, 1], c[:, 0], linewidth=2, linestyle='--')
-
-    # ax.axis('image')
-    # ax.set_xticks([])
-    # ax.set_yticks([])
 
     gpx = gpxpy.gpx.GPX()
 
@@ -77,9 +63,6 @@ def img2gpx(img_path,
     gpx_track.segments.append(gpx_segment)
 
     # Create points:
-
-
-
     m_lat, m_lon = metres_to_latlng_conversion(top_left[0])
     print("{}, {}".format(m_lat, m_lon))
 
@@ -87,10 +70,6 @@ def img2gpx(img_path,
         gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(top_left[0] - scale*c[0]/m_lat,
                                                           top_left[1] + scale*c[1]/m_lon,
                                                           elevation=10))
-
-    # with open('out.gpx', 'w') as f:
-    #     f.write(gpx.to_xml())
-    #     print('Wrote to out.gpx')
 
 
     return gpx.to_xml()
