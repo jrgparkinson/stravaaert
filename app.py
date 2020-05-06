@@ -57,6 +57,9 @@ def upldfile():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
 
+            if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                os.makedirs(app.config['UPLOAD_FOLDER'])
+
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
             resp = json.dumps({"filename": filename})
