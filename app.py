@@ -5,6 +5,8 @@ import json
 import os
 from werkzeug.utils import secure_filename
 from src.img2gpx import img2gpx
+import uuid
+
 UPLOAD_FOLDER = 'img_upload/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
@@ -27,8 +29,8 @@ def gpx(filename):
     return Response(gpx, mimetype='text/xml')
 
 
-@app.route('/download/<filename>')
-def download(filename):
+@app.route('/download/<filename>/<upload_name>')
+def download(filename, upload_name):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     gpx_filename = filename.split('.')[0]
     print(file_path)
@@ -36,7 +38,7 @@ def download(filename):
     return Response(gpx,
                     mimetype="text/plain",
                     headers={"Content-Disposition":
-                                 "attachment;filename={}.gpx".format(gpx_filename)})
+                                 "attachment;filename={}.gpx".format(upload_name)})
 
 
 @app.route('/uploadajax', methods = ['POST'])
@@ -60,9 +62,12 @@ def upldfile():
             if not os.path.exists(app.config['UPLOAD_FOLDER']):
                 os.makedirs(app.config['UPLOAD_FOLDER'])
 
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # Generate unique filename
+            save_name = uuid.uuid4().hex
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], save_name))
 
-            resp = json.dumps({"filename": filename})
+            resp = json.dumps({"filename": save_name,
+                               "upload_name": filename})
             print('Returning ' + str(resp))
 
             return Response(resp, mimetype='application/json')
