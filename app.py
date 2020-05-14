@@ -16,29 +16,51 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/gpx/<filename>')
-def gpx(filename):
+
+@app.route("/retrieve/<method>/<filename>/<position>/<scale>/<download_name>/")
+def retrieve(method, filename, position, scale, download_name=None):
+    print("Retrieve: {}, {}, {}, {}, {}".format(method, filename, position, scale, download_name))
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     gpx_filename = filename.split('.')[0]
     print(file_path)
-    gpx = img2gpx(file_path)
+    pos = tuple([float(x) for x in position.split(',')])
+    print(pos)
+    gpx = img2gpx(file_path, top_left=pos, scale=float(scale))
 
-    # response = make_response(gpx, 200)
-    # response.mimetype = "text/plain"
-
-    return Response(gpx, mimetype='text/xml')
-
-
-@app.route('/download/<filename>/<upload_name>')
-def download(filename, upload_name):
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    gpx_filename = filename.split('.')[0]
-    print(file_path)
-    gpx = img2gpx(file_path)
-    return Response(gpx,
+    if method=="GPX":
+        return Response(gpx, mimetype='text/xml')
+    elif method=="file":
+        return Response(gpx,
                     mimetype="text/plain",
                     headers={"Content-Disposition":
-                                 "attachment;filename={}.gpx".format(upload_name)})
+                                 "attachment;filename={}.gpx".format(download_name)})
+
+
+
+
+# @app.route('/gpx/<filename>')
+# def gpx(filename):
+#     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+#     gpx_filename = filename.split('.')[0]
+#     print(file_path)
+#     gpx = img2gpx(file_path)
+#
+#     # response = make_response(gpx, 200)
+#     # response.mimetype = "text/plain"
+#
+#     return Response(gpx, mimetype='text/xml')
+#
+
+# @app.route('/download/<filename>/<upload_name>')
+# def download(filename, upload_name):
+#     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+#     gpx_filename = filename.split('.')[0]
+#     print(file_path)
+#     gpx = img2gpx(file_path)
+#     return Response(gpx,
+#                     mimetype="text/plain",
+#                     headers={"Content-Disposition":
+#                                  "attachment;filename={}.gpx".format(upload_name)})
 
 
 @app.route('/uploadajax', methods = ['POST'])

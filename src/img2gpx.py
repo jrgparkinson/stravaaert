@@ -5,6 +5,7 @@ from skimage.color import rgb2gray
 import gpxpy
 
 def metres_to_latlng_conversion(reference_lat):
+    print(reference_lat)
     reference_lat = reference_lat * (np.pi / 180)  # Convert to radians
     m_per_deg_lat = 111132.92 - 559.822 * np.cos(2 * reference_lat) + 1.175 * np.cos(
         4 * reference_lat) - 0.0023 * np.cos(6 * reference_lat)
@@ -14,7 +15,7 @@ def metres_to_latlng_conversion(reference_lat):
     return [m_per_deg_lat, m_per_deg_lon]
 
 def img2gpx(img_path,
-            top_left = [51.765688, -1.245077], # exeter-hertford
+            top_left = (51.765688, -1.245077), # exeter-hertford
             scale = 1.0):
     r = rgb2gray(io.imread(img_path))
 
@@ -63,6 +64,7 @@ def img2gpx(img_path,
     gpx_track.segments.append(gpx_segment)
 
     # Create points:
+    
     m_lat, m_lon = metres_to_latlng_conversion(top_left[0])
     print("{}, {}".format(m_lat, m_lon))
 
