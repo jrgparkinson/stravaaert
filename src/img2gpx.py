@@ -15,8 +15,14 @@ def metres_to_latlng_conversion(reference_lat):
     return [m_per_deg_lat, m_per_deg_lon]
 
 def img2gpx(img_path,
-            top_left = (51.765688, -1.245077), # exeter-hertford
+            center_position = (51.765688, -1.245077), # exeter-hertford
             scale = 1.0):
+    """
+    img_pat: file path to image to process
+    center_position: (lat, lng)
+    scale: metres/pixel
+    """
+    
     r = rgb2gray(io.imread(img_path))
 
     # Find contours at a constant value of 0.8
@@ -25,7 +31,7 @@ def img2gpx(img_path,
     # r = feature.canny(r, sigma=0.1)
     # edges2 = feature.canny(im, sigma=3)
 
-    # Best so far
+    # Best method so far
     r = exposure.adjust_gamma(r, 0.5)
     contours = measure.find_contours(r, 0.9)
 
@@ -65,7 +71,7 @@ def img2gpx(img_path,
 
     # Create points:
     
-    m_lat, m_lon = metres_to_latlng_conversion(top_left[0])
+    m_lat, m_lon = metres_to_latlng_conversion(center_position[0])
     print("{}, {}".format(m_lat, m_lon))
 
     # top left is actually the center
@@ -77,8 +83,8 @@ def img2gpx(img_path,
     y_center = (max(y_vals) - min(y_vals))/2.0
 
     for c in longest_contour:
-        gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(top_left[0] - scale*(c[0]-x_center)/m_lat,
-                                                          top_left[1] + scale*(c[1]-y_center)/m_lon,
+        gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(center_position[0] - scale*(c[0]-x_center)/m_lat,
+                                                          center_position[1] + scale*(c[1]-y_center)/m_lon,
                                                           elevation=10))
 
 

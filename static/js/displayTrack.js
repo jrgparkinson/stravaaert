@@ -34,7 +34,7 @@ function updateMap(do_fit) {
 
             $("#downloadGPX").css("display", "inline");
             $("#positionControls").css("display", "inline");
-            var position = $("#topLeft").val();
+            var position = $("#position").val();
             var scale = $("#scale").val();
 
             var gpx = "/retrieve/GPX/" + data["filename"] + "/" + position + "/" + scale + "/downloadName/";
@@ -73,7 +73,7 @@ function addToMap(map, filename, position, scale) {
     if (overlay != undefined) { map.removeLayer(overlay); }
     overlay = new L.GPX(gpx, {async: true}).addTo(map);
 
-    $("#topLeft").val(position);
+    $("#position").val(position);
     $("#scale").val(scale);
 
     return overlay

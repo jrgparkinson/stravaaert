@@ -1,12 +1,12 @@
 # app.py
 from flask import Flask, flash, Response, request, redirect, url_for, make_response, render_template
-app = Flask(__name__)
 import json
 import os
 from werkzeug.utils import secure_filename
 from src.img2gpx import img2gpx
 import uuid
 
+app = Flask(__name__)
 UPLOAD_FOLDER = 'img_upload/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
@@ -25,7 +25,7 @@ def retrieve(method, filename, position, scale, download_name=None):
     print(file_path)
     pos = tuple([float(x) for x in position.split(',')])
     print(pos)
-    gpx = img2gpx(file_path, top_left=pos, scale=float(scale))
+    gpx = img2gpx(file_path, center_position=pos, scale=float(scale))
 
     if method=="GPX":
         return Response(gpx, mimetype='text/xml')
@@ -34,33 +34,6 @@ def retrieve(method, filename, position, scale, download_name=None):
                     mimetype="text/plain",
                     headers={"Content-Disposition":
                                  "attachment;filename={}.gpx".format(download_name)})
-
-
-
-
-# @app.route('/gpx/<filename>')
-# def gpx(filename):
-#     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-#     gpx_filename = filename.split('.')[0]
-#     print(file_path)
-#     gpx = img2gpx(file_path)
-#
-#     # response = make_response(gpx, 200)
-#     # response.mimetype = "text/plain"
-#
-#     return Response(gpx, mimetype='text/xml')
-#
-
-# @app.route('/download/<filename>/<upload_name>')
-# def download(filename, upload_name):
-#     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-#     gpx_filename = filename.split('.')[0]
-#     print(file_path)
-#     gpx = img2gpx(file_path)
-#     return Response(gpx,
-#                     mimetype="text/plain",
-#                     headers={"Content-Disposition":
-#                                  "attachment;filename={}.gpx".format(upload_name)})
 
 
 @app.route('/uploadajax', methods = ['POST'])
@@ -99,17 +72,6 @@ def upldfile():
 def index():
     return render_template('view.html')
 
-
-
-# @app.route('/uploads/<filename>')
-# def uploaded_file(filename):
-#     file_path = os.path.join(app.config['UPLOAD_FOLDER'],  filename)
-#     gpx_filename = filename.split('.')[0]
-#     print(file_path)
-#     gpx = img2gpx(file_path)
-#
-#     # return Response(gpx, mimetype='text/xml')
-#     return render_template('view.html', filename=filename)
 
 
 if __name__ == '__main__':
