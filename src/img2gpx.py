@@ -68,9 +68,17 @@ def img2gpx(img_path,
     m_lat, m_lon = metres_to_latlng_conversion(top_left[0])
     print("{}, {}".format(m_lat, m_lon))
 
+    # top left is actually the center
+    # center the contours:
+    x_vals = [c[0] for c in longest_contour]
+    y_vals = [c[1] for c in longest_contour]
+
+    x_center = (max(x_vals) - min(x_vals))/2.0
+    y_center = (max(y_vals) - min(y_vals))/2.0
+
     for c in longest_contour:
-        gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(top_left[0] - scale*c[0]/m_lat,
-                                                          top_left[1] + scale*c[1]/m_lon,
+        gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(top_left[0] - scale*(c[0]-x_center)/m_lat,
+                                                          top_left[1] + scale*(c[1]-y_center)/m_lon,
                                                           elevation=10))
 
 
