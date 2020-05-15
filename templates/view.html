@@ -4,17 +4,18 @@
 <head>
     <meta charset="UTF-8">
 
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/normalize.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/skeleton.css')}}">
+
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/styles.css') }}" />
 
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/normalize.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/skeleton.css')}}">
-
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+ 
     <title>Strava art generator</title>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">
-    </script>
 
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
     <script type="text/javascript" src="/static/js/displayTrack.js"></script>
 
 </head>
@@ -27,7 +28,7 @@
 
             
             <div class="row">
-                <div id="upload" class="six columns">
+                <div id="upload" class="eight columns">
                     <form id="upload-file" method="post" enctype="multipart/form-data">
 
                         <input name="file" id="file" type="file" class="inputfile">
@@ -35,21 +36,22 @@
 
                     </form>
                 </div>
-                <div id="download " class="three columns controlButton">
-                    <a class="button" id="downloadGPX" style="display:none; padding:10px">Download GPX</a>
+                <div id="download " class="two columns controlButton">
+                    <a class="button myButton" id="downloadGPX" style="display:none;">Download GPX</a>
                 </div>
             </div>
 
             <div class="row" id="positionControls">
-                <div class="three columns">
+                <div class="five columns form-inline">
                     <label for="position">Top left:</label>
-                    <input name="position" id="position" type="text" value="51.765688,-1.245077">
+                    <input name="position" id="position" size="20" type="text" value="51.765688,-1.245077">
                 </div>
-                <div class="three columns">
+
+                <div class="three columns form-inline">
                     <label for="scale">Scale:</label>
-                    <input name="scale" id="scale" type="text" value="1.0">
+                    <input name="scale" id="scale" size="5" type="text" value="1.0">
                 </div>
-                <div class="three columns controlButton" id="updatePos">
+                <div class="two columns controlButton" id="updatePos">
                     <button id="updatePosition" type="button" class="button">Update</button>
                 </div>
             </div>
@@ -59,10 +61,43 @@
 
         <div id="mapContainer" class="mapContainer"></div>
 
+
+        <div id="about" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+              <span class="close" id="close">&times;</span>
+              <h2>About</h2>
+              <p>This is a tool to convert an image into a GPX track, which can then be download and 
+                  either loaded onto a GPX watch for you to follow, or simply uploaded straight to Strava.
+              </p>
+
+              <h3>Technical details</h3>
+              <p>We extract a path by converting the path to grayscale then extracting the longest contour via
+                  the python package skimage.measure.find_contours. For full details check out the source code on <a href="https://github.com/jrgparkinson/stravaart/blob/master/src/img2gpx.py">github</a>
+                  If you have a better algorithm, please create a pull request!
+              </p>
+
+              <h3>Get in touch</h3>
+              <p>Social: <a href="https://www.instagram.com/thecowleyclub/">Instagram</a>    <br>
+                Technical (bugs, improvements, requests): <a href="https://github.com/jrgparkinson/stravaart">Github</a> </p>
+
+              <h3>Credit</h3>
+              <p>This is a Cowley Club production. Individual contributors: Jamie Parkinson, Miles Weatherseed.
+                  Image to path conversion uses the python packages <a href="https://scikit-image.org/">skimage</a>, 
+                  <a href="https://numpy.org/">numpy</a>, 
+                  and <a href="https://pypi.org/project/gpxpy/">gpxpy</a>. 
+                  UI created with <a href="https://leafletjs.com/">leaflet.js</a> and <a href="getskeleton.com">Skeleton</a>. 
+                Website hosted for free by <a href="heroku.com">Heroku</a>. </p>
+            </div>
+          </div>
+
     
-        <footer>Strava Art - a Cowley Club production</footer>
+        <footer>Strava Art - a Cowley Club production - <a href="#" id="myBtn">About</a></footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.4.0/gpx.min.js"></script>
+    <script src="{{ url_for('static',filename='js/modal.js') }}" type="text/javascript"></script>
 
 </body>
 
