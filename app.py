@@ -7,25 +7,32 @@ from src.img2gpx import img2gpx
 import uuid
 
 app = Flask(__name__)
+app.secret_key = "djwoiu52983mc92m"
+
+
 UPLOAD_FOLDER = 'img_upload/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+CONVERSION_FUNCTIONS = {'parkinson': img2gpx,
+                        'weatherseed': img2gpx}
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/retrieve/<method>/<filename>/<position>/<scale>/<download_name>/")
-def retrieve(method, filename, position, scale, download_name=None):
+@app.route("/retrieve/<method>/<filename>/<position>/<scale>/<algorithm>/<download_name>/")
+def retrieve(method, filename, position, scale, algorithm, download_name=None):
     print("Retrieve: {}, {}, {}, {}, {}".format(method, filename, position, scale, download_name))
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     gpx_filename = filename.split('.')[0]
-    print(file_path)
     pos = tuple([float(x) for x in position.split(',')])
-    print(pos)
-    gpx = img2gpx(file_path, center_position=pos, scale=float(scale))
+
+    extra_args = {} # option to add various other args here
+
+    gpx = CONVERSION_FUNCTIONS[algorithm](file_path, pos, float(scale), extra_args)
 
     if method=="GPX":
         return Response(gpx, mimetype='text/xml')
@@ -70,7 +77,7 @@ def upldfile():
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('view.html')
+    return render_template('index.html')
 
 
 

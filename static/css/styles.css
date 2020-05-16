@@ -121,6 +121,7 @@ padding-top:10px;
   padding: 10px;
   background-color: #fff;
   border: 1px solid #ddd;
+  width:100%;
 }
 
 /* Style the submit button */
@@ -149,7 +150,7 @@ padding-top:10px;
 
 /* The Modal (background) */
 .modal {
-  display: block; /* Hidden by default */
+  display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 10; /* Sit on top */
   left: 0;
@@ -168,8 +169,8 @@ padding-top:10px;
   padding: 20px;
   border: 1px solid #888;
   /* width: 80%; Could be more or less, depending on screen size */
-  margin-left:20%;
-  margin-right:20%;
+  margin-left:10%;
+  margin-right:10%;
   height:90%;
   
   overflow:scroll;
@@ -194,3 +195,13 @@ a {
   color: dimgray;
   text-decoration: none;
 }
+
+
+
+.new_Btn {
+  // your css propterties
+  }
+  
+  #html_btn {
+   display:none;
+  }

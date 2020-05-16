@@ -3,8 +3,9 @@ from skimage import measure
 from skimage import io, feature, exposure
 from skimage.color import rgb2gray
 import gpxpy
+from typing import List
 
-def metres_to_latlng_conversion(reference_lat):
+def metres_to_latlng_conversion(reference_lat : float) -> List[float]:
     print(reference_lat)
     reference_lat = reference_lat * (np.pi / 180)  # Convert to radians
     m_per_deg_lat = 111132.92 - 559.822 * np.cos(2 * reference_lat) + 1.175 * np.cos(
@@ -14,14 +15,19 @@ def metres_to_latlng_conversion(reference_lat):
 
     return [m_per_deg_lat, m_per_deg_lon]
 
-def img2gpx(img_path,
+def img2gpx(img_path : str,
             center_position = (51.765688, -1.245077), # exeter-hertford
-            scale = 1.0):
+            scale = 1.0,
+            extra_args = None) -> str:
     """
     img_pat: file path to image to process
     center_position: (lat, lng)
     scale: metres/pixel
+
+    returns string containing xml 
     """
+
+    print("Convert {} with center {} and scale {}".format(img_path, center_position, scale))
     
     r = rgb2gray(io.imread(img_path))
 

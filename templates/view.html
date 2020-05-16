@@ -30,9 +30,10 @@
             <div class="row">
                 <div id="upload" class="eight columns">
                     <form id="upload-file" method="post" enctype="multipart/form-data">
-
                         <input name="file" id="file" type="file" class="inputfile">
                         <button id="upload-file-btn" type="button" class="button">Upload</button>
+                        <!-- <div class="new_Btn">SelectPicture</div><br>
+                        <input id="html_btn" type='file'" /><br> -->
 
                     </form>
                 </div>
@@ -44,12 +45,12 @@
             <div class="row" id="positionControls">
                 <div class="five columns form-inline">
                     <label for="position">Top left:</label>
-                    <input name="position" id="position" size="20" type="text" value="51.765688,-1.245077">
+                    <input name="position" id="position" type="text" value="51.765688,-1.245077">
                 </div>
 
                 <div class="three columns form-inline">
                     <label for="scale">Scale:</label>
-                    <input name="scale" id="scale" size="5" type="text" value="1.0">
+                    <input name="scale" id="scale"  type="text" value="1.0">
                 </div>
                 <div class="two columns controlButton" id="updatePos">
                     <button id="updatePosition" type="button" class="button">Update</button>
@@ -98,6 +99,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.4.0/gpx.min.js"></script>
     <script src="{{ url_for('static',filename='js/modal.js') }}" type="text/javascript"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+    $('.new_Btn').bind("click" , function () {
+        $('#html_btn').click();
+    });
+});
+    </script>
 
 </body>
 
