@@ -80,7 +80,7 @@ html {
   
   .mapContainer {
     flex: 1;
-    background-color:red;
+    /* background-color:red; */
   }
   
   
@@ -93,7 +93,7 @@ html {
   }
   
   main {
-    background-color:red;
+    /* background-color:red; */
   }
   
   footer {
@@ -104,3 +104,14 @@ html {
   #map {
     height:calc(100% - 60px); /* 60px is the footer height */
   }
+
+  .icon {
+    width:25px;
+    height:25px;
+    padding-left:5px;
+  }
+
+
+.form-row {
+  color:#dc3545;
+}

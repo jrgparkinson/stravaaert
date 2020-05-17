@@ -15,6 +15,11 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# These functions should look like:
+# img2gpx(img_path : str,
+#             center_position = (51.765688, -1.245077) : tuple[float],
+#             scale = 1.0 : float ,
+#             extra_args = None : dict[]) -> str:
 CONVERSION_FUNCTIONS = {'parkinson': img2gpx,
                         'weatherseed': img2gpx}
 
@@ -44,36 +49,48 @@ def retrieve(method, filename, position, scale, algorithm, download_name=None):
 
 
 @app.route('/uploadajax', methods = ['POST'])
-def upldfile():
+def uploadfile():
+    response = {"filename": "",
+    "upload_name": "",
+    "error": ""}
+
     if request.method == 'POST':
         # file_val = request.files['file']
 
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            response["error"] = "No file selected"
+            # return Response(resp, mimetype='application/json')
+        else:
+            file = request.files['file']
+            # if user does not select file, browser also
+            # submit an empty part without filename
+            if not file or file.filename == '':
+                flash('No selected file')
+                response["error"] = "No file selected"
 
-            if not os.path.exists(app.config['UPLOAD_FOLDER']):
-                os.makedirs(app.config['UPLOAD_FOLDER'])
+            elif not allowed_file(file.filename):
+                response["error"] = "Invalid file extension. Allowed types: " + ','.join(ALLOWED_EXTENSIONS)
+            else:
+                filename = secure_filename(file.filename)
 
-            # Generate unique filename
-            save_name = uuid.uuid4().hex
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], save_name))
+                if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                    os.makedirs(app.config['UPLOAD_FOLDER'])
 
-            resp = json.dumps({"filename": save_name,
-                               "upload_name": filename})
-            print('Returning ' + str(resp))
+                # Generate unique filename
+                save_name = uuid.uuid4().hex
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], save_name))
 
-            return Response(resp, mimetype='application/json')
+                response["filename"] = save_name
+                response["upload_name"] =  filename
 
+    else:
+        response["error"] = "Internal error encountered"
+                
+            # return Response(resp, mimetype='application/json')
+    print('Returning ' + str(response))
+    return Response(json.dumps(response), mimetype='application/json')
 
 @app.route('/', methods=['GET'])
 def index():

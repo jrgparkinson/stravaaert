@@ -76,11 +76,9 @@ def img2gpx(img_path : str,
     gpx_track.segments.append(gpx_segment)
 
     # Create points:
-    
     m_lat, m_lon = metres_to_latlng_conversion(center_position[0])
     print("{}, {}".format(m_lat, m_lon))
 
-    # top left is actually the center
     # center the contours:
     x_vals = [c[0] for c in longest_contour]
     y_vals = [c[1] for c in longest_contour]
@@ -88,10 +86,48 @@ def img2gpx(img_path : str,
     x_center = (max(x_vals) - min(x_vals))/2.0
     y_center = (max(y_vals) - min(y_vals))/2.0
 
-    for c in longest_contour:
-        gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(center_position[0] - scale*(c[0]-x_center)/m_lat,
-                                                          center_position[1] + scale*(c[1]-y_center)/m_lon,
-                                                          elevation=10))
+    # Normalize the contour so it is center on 0,0 and has max extent 0.5 in any direction
+    scaling = max(max(x_vals) - min(x_vals), max(y_vals) - min(y_vals))
+    scaled_contour = [(c - [x_center, y_center])/scaling for c in longest_contour]
+
+    # Sub sample - want one point every ~ min_path_length metres
+    filtered_contours = [scaled_contour[0]]
+    dx = 0 # cumulative distance from last accepted point
+    min_path_length = 3 # metres
+    for i in range(1, len(scaled_contour)):
+        c = scaled_contour[i]
+        prev_c = scaled_contour[i-1]
+        dx = dx + scale*np.sqrt(sum(pow(c-prev_c, 2)))
+        if dx > min_path_length:
+            filtered_contours.append(c)
+            dx = 0
+        
+
+    # scale is width of image in metres
+
+    from datetime import datetime, timedelta
+    time = datetime.now()
+    speed = 12 # km/h
+    speed = speed * 1000.0/3600.0 # m/s
+
+    for i in range(len(filtered_contours)):
+        c = filtered_contours[i]
+        if i > 0:
+            prev_c = filtered_contours[i-1]
+            # print("c: " + str(c))
+            # print("prev_c: " + str(prev_c))
+
+            dx = scale*np.sqrt(sum(pow(c-prev_c, 2)))
+            dt = dx/speed
+            time += timedelta(seconds=dt)
+
+            print("dx: {} (m), dt: {} (s), time: {}".format(dx, dt, time))
+
+        
+        gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(center_position[0] - scale*c[0]/m_lat,
+                                                          center_position[1] + scale*c[1]/m_lon,
+                                                          elevation=10,
+                                                          time=time))
 
 
     return gpx.to_xml()

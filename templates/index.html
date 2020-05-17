@@ -6,11 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <!-- <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico"> -->
-
     <title>Strava Art</title>
 
-    <!-- <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sticky-footer/"> -->
 
     <!-- Bootstrap core CSS -->
     <!-- CSS only -->
@@ -46,25 +43,36 @@
 
     <div class="wrapper">
 
-        
+
                 <div class="controls">
                     <form id="upload-file" method="post" enctype="multipart/form-data">
                         <div class="form-row align-items-center">
 
                             <div class="col-sm-3 my-1">
                                 
-                                <label for="file">Image file</label>
-                                <input name="file" type="file" class="form-control-file" id="file">
+                                <!-- <label for="file">Image file</label>
+                                <input name="file" type="file" class="form-control-file" id="file"> -->
+                                <!-- <label for="file-upload" class="custom-file-upload">
+                                    <i class="fa fa-cloud-upload"></i> Upload image
+                                    <input id="file" type="file"/>
+                                </label>
+                                 -->
+                                 <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="file" id="file">
+                                    <label class="custom-file-label" for="file">Choose image</label>
+                                  </div>
                                 
                             </div>
                             <div class="col-sm-2 my-1">
-                                <label for="position">Position (lat,lon)</label>
+                                <label for="position">Position (lat,lon)
+                                     <img class="icon" src="{{ url_for('static',filename='my_location.svg') }}"
+                                     onclick="getUserLocation()"></label>
                                 <input type="text" class="form-control mb-2 mr-sm-2" id="position"
                                     placeholder="51.765688, -1.245077">
                             </div>
                             <div class="col-sm-1 my-1">
-                                <label for="scale">Scale</label>
-                                <input type="text" class="form-control mb-2 mr-sm-2" id="scale" placeholder="1.0">
+                                <label for="scale">Size (m)</label>
+                                <input type="text" class="form-control mb-2 mr-sm-2" id="scale" placeholder="100.0">
                             </div>
                             <div class="col-sm-2 my-1">
                                 <label for="algorithm">Algorithm</label>
