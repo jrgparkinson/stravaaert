@@ -115,3 +115,11 @@ html {
 .form-row {
   color:#dc3545;
 }
+
+#gpxData {
+  display:none;
+}
+
+#loading {
+  display:none;
+}

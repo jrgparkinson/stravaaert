@@ -121,7 +121,7 @@ def img2gpx(img_path : str,
             dt = dx/speed
             time += timedelta(seconds=dt)
 
-            print("dx: {} (m), dt: {} (s), time: {}".format(dx, dt, time))
+            # print("dx: {} (m), dt: {} (s), time: {}".format(dx, dt, time))
 
         
         gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(center_position[0] - scale*c[0]/m_lat,
