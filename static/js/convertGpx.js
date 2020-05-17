@@ -6,6 +6,11 @@ var prev_scale;
 var current_file;
 var current_algorithm;
 
+var current_opt = {"file": undefined, 
+"algorithm": undefined,
+"speed": undefined,
+"smoothing": undefined};
+
 function makeMap() {
     if (!map) {
         document.getElementById('mapContainer').innerHTML = "<div id='map' style='width: 100%;'></div>";
@@ -48,8 +53,10 @@ function convertImage(do_fit) {
                 current_file = $("#file").val();
                 current_algorithm = $("#algorithm option:selected").val();
                 // alert(current_file);
-
-
+                current_opt.file  = $("#file").val();
+                current_opt.algorithm = $("#algorithm option:selected").val();
+                current_opt.speed = getValOrPlaceholder("speed");
+                current_opt.smoothing = getValOrPlaceholder("smoothing");
 
                 makeMap();
 
@@ -63,10 +70,9 @@ function convertImage(do_fit) {
                 mapChanged(do_fit);
 
                 // Here the events for zooming and dragging
-                map.on('zoomend', function () {
-
-                });
-                map.on('dragend', function () {
+                // map.on('zoomend', function () {
+                // });
+                map.on('drag', function () {
                     // Update position textbox with new map location
                     var position = map.getCenter()
                     var posString = position.lat + "," + position.lng;
@@ -110,14 +116,12 @@ function getEnteredLocation() {
     return { "lat": parts[0], "lng": parts[1] };
 }
 
-function getPlaceHolderLatLng() {
-    var posPlaceholder = $("#position").attr('placeholder');
-    var parts = posPlaceholder.split(',');
-    return { "lat": parts[0], "lng": parts[1] };
+function getValOrPlaceholder(id) {
+    return $("#" + id).val() ? $("#" + id).val() : $("#" + id).attr('placeholder');
 }
 
-function makeLink(filename, download_name) {
-    var scale = $("#scale").val() ? $("#scale").val() : $("#scale").attr('placeholder');
+function makeLink(filename) {
+    var scale = getValOrPlaceholder("scale"); // $("#scale").val() ? $("#scale").val() : $("#scale").attr('placeholder');
     var position = getEnteredLocation();
     var posString = position.lat + "," + position.lng;
     var algorithm = $("#algorithm option:selected").val();
@@ -125,15 +129,17 @@ function makeLink(filename, download_name) {
     $("#position").val(posString);
     $("#scale").val(scale);
 
-    return "/retrieve/file/" + filename + "/" + posString + "/" + scale + "/" + algorithm + "/" + download_name + "/";
+    var speed = getValOrPlaceholder("speed"); //$("#speed").val();
+    var smoothing = getValOrPlaceholder("smoothing"); //$("#smoothing").val();
+
+    return "/retrieve/" + filename + "/" + posString + "/" + scale + "/" + algorithm + "/" + speed + "/" + smoothing + "/";
 
 }
 
 function mapChanged(do_fit) {
     var filename = $("#file").attr("data-filename");
 
-    var gpx = makeLink(filename, "DUMMY");
-
+    var gpx = makeLink(filename);
 
     if (overlay == undefined) {
         console.log("Loading: " + gpx);
@@ -145,6 +151,7 @@ function mapChanged(do_fit) {
             contentType: false,
             cache: false,
             processData: false,
+            data: {},
             success: function (data) {
                 // console.log(data);
 
@@ -175,9 +182,6 @@ function mapChanged(do_fit) {
 
             }
         });
-
-      
-
 
     } else {
         // Move overlay with JS
@@ -264,9 +268,12 @@ $(function () {
         console.log("Convert clicked!");
         $("#loading").css("display", "block");
 
-        // If overlay already exists and file/algorithm hasn't changed, just move existing overlay
-        if (overlay && $("#file").val() == current_file
-            && current_algorithm == $("#algorithm option:selected").val()) {
+        // If overlay already exists and certain options hasven't changed, just move existing overlay
+        if (overlay 
+            && current_opt.file == $("#file").val()
+            && current_opt.algorithm == $("#algorithm option:selected").val()
+            && current_opt.speed == getValOrPlaceholder("speed")
+            && current_opt.smoothing == getValOrPlaceholder("smoothing")) {
             mapChanged();
         } else {
             var mapExists = map != undefined;
@@ -285,6 +292,13 @@ $(function () {
     document.querySelector('.custom-file-input').addEventListener('change', function (e) {
         var fileName = document.getElementById("file").files[0].name;
         var nextSibling = e.target.nextElementSibling
+
+        var fileWidth = nextSibling.getBoundingClientRect().width;
+        console.log('File input width: ' + String(fileWidth));
+        var maxLength = (fileWidth-80.0)/8.0; // 25;
+        if (fileName.length > maxLength) {
+            fileName = fileName.substring(0, maxLength) + '...';
+        }
         nextSibling.innerText = fileName
     })
 });

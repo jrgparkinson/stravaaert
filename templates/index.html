@@ -68,15 +68,11 @@
                         <label for="scale">Size (m)</label>
                         <input type="text" class="form-control mb-2 mr-sm-2" id="scale" placeholder="100.0">
                     </div>
-                    <div class="col-sm-2 my-1">
-                        <label for="algorithm">Algorithm</label>
-                        <select class="form-control mb-2 mr-sm-2" id="algorithm">
-                            <option value="weatherseed">Weatherseed</option>
-                            <option value="parkinson">Parkinson</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-2 my-1">
+                    <div class="col-auto my-1">
                         <button type="button" class="btn btn-danger " id="convert">Convert</button>
+                        <button class="btn btn-danger" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            More Options
+                          </button>
                         <button type="button" class="btn btn-danger" id="downloadGPX">Download</button>
 
                         <!-- id="downloadGPX" -->
@@ -85,8 +81,31 @@
                         <span class="sr-only">Loading...</span>
                     </div>
                 </div>
+
+               
+               
+                <div class="collapse form-row align-items-center" id="collapseExample">
+                  <!-- <div class="card card-body"> -->
+                    <div class="col-sm-2 my-1">
+                        <label for="scale">Speed (km/h)</label>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="speed" placeholder="12.0">
+                    </div>
+                    <div class="col-sm-2 my-1">
+                        <label for="scale">Smoothing (m)</label>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="smoothing" placeholder="1.0">
+                    </div>
+                    <div class="col-sm-2 my-1">
+                        <label for="algorithm">Algorithm</label>
+                        <select class="form-control mb-2 mr-sm-2" id="algorithm">
+                            <option value="weatherseed">Weatherseed</option>
+                            <option value="parkinson">Parkinson</option>
+                        </select>
+                    </div>
+                  <!-- </div> -->
+                </div>
+
             </form>
-        </div>
+        </div> <!--end controls-->
 
 
 

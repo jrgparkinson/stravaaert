@@ -28,24 +28,27 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/retrieve/<method>/<filename>/<position>/<scale>/<algorithm>/<download_name>/")
-def retrieve(method, filename, position, scale, algorithm, download_name=None):
-    print("Retrieve: {}, {}, {}, {}, {}".format(method, filename, position, scale, download_name))
+# @app.route("/retrieve/<string:filename>/<string:position>/<float:scale>/<string:algorithm>/<string:other>", methods=["GET"])
+@app.route('/retrieve/<filename>/<position>/<scale>/<algorithm>/<speed>/<smoothing>/', methods=["GET"])
+def retrieve(filename, position, scale, algorithm, speed=12, smoothing=3):
+    print("Retrieve: {}, {}, {}, {}".format(filename, position, scale, algorithm))
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     gpx_filename = filename.split('.')[0]
     pos = tuple([float(x) for x in position.split(',')])
 
-    extra_args = {} # option to add various other args here
+    extra_args = {"speed": float(speed), # km/h
+                "smoothing": float(smoothing) # approx metres between gps points
+                } 
 
     gpx = CONVERSION_FUNCTIONS[algorithm](file_path, pos, float(scale), extra_args)
 
-    if method=="GPX":
-        return Response(gpx, mimetype='text/xml')
-    elif method=="file":
-        return Response(gpx,
-                    mimetype="text/plain",
-                    headers={"Content-Disposition":
-                                 "attachment;filename={}.gpx".format(download_name)})
+    # if method=="GPX":
+    # return Response(gpx, mimetype='text/xml')
+    # elif method=="file":
+    return Response(gpx,
+                mimetype="text/plain",
+                headers={"Content-Disposition":
+                                "attachment;filename=download.gpx"})
 
 
 @app.route('/uploadajax', methods = ['POST'])
@@ -55,7 +58,6 @@ def uploadfile():
     "error": ""}
 
     if request.method == 'POST':
-        # file_val = request.files['file']
 
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -88,7 +90,6 @@ def uploadfile():
     else:
         response["error"] = "Internal error encountered"
                 
-            # return Response(resp, mimetype='application/json')
     print('Returning ' + str(response))
     return Response(json.dumps(response), mimetype='application/json')
 
