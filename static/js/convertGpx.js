@@ -175,10 +175,10 @@ function mapChanged(do_fit) {
                         if (do_fit) {
                             map.fitBounds(e.target.getBounds());
                         }
-                        $("#loading").css("display", "none");
+                        $("#loading").addClass("hidden");
                     }).addTo(map);
 
-                    $("#loading").css("display", "none");
+                    $("#loading").addClass("hidden");
 
             }
         });
@@ -232,7 +232,7 @@ function mapChanged(do_fit) {
 
         addOverlay(false);
 
-        $("#loading").css("display", "none");
+        $("#loading").addClass("hidden");
 
     }
 
@@ -266,7 +266,7 @@ function addOverlay(do_fit) {
 $(function () {
     $('#convert').click(function () {
         console.log("Convert clicked!");
-        $("#loading").css("display", "block");
+        $("#loading").removeClass("hidden");
 
         // If overlay already exists and certain options hasven't changed, just move existing overlay
         if (overlay 

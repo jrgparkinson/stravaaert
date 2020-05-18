@@ -120,6 +120,6 @@ html {
   display:none;
 }
 
-#loading {
-  display:none;
+.hidden{
+  display:none!important;
 }
